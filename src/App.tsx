@@ -22,7 +22,7 @@ export const App: React.FC = () => {
 
         <Autocomplete
           people={peopleFromServer}
-          onSelect={handleSelectPerson}
+          onSelected={handleSelectPerson}
           selectedPerson={selectedPerson}
         />
       </main>

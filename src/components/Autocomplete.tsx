@@ -3,14 +3,14 @@ import { Person } from '../types/Person';
 
 type Props = {
   people: Person[];
-  onSelect: (person: Person | null) => void;
+  onSelected: (person: Person | null) => void;
   delay?: number;
   selectedPerson: Person | null;
 };
 
 export const Autocomplete: React.FC<Props> = ({
   people,
-  onSelect,
+  onSelected,
   delay = 300,
   selectedPerson,
 }) => {
@@ -21,16 +21,24 @@ export const Autocomplete: React.FC<Props> = ({
   const timerId = useRef(0);
 
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
+    const { value } = event.target;
+
+    setQuery(value);
 
     window.clearTimeout(timerId.current);
 
-    if (selectedPerson && event.target.value !== selectedPerson.name) {
-      onSelect(null);
+    if (selectedPerson && value !== selectedPerson.name) {
+      onSelected(null);
     }
 
     timerId.current = window.setTimeout(() => {
-      setNormalizedQuery(event.target.value);
+      const trimmedValue = value.trim();
+
+      if (trimmedValue === '') {
+        setNormalizedQuery('');
+      } else {
+        setNormalizedQuery(trimmedValue);
+      }
     }, delay);
   };
 
@@ -64,7 +72,7 @@ export const Autocomplete: React.FC<Props> = ({
                   onClick={() => {
                     setQuery(person.name);
                     setNormalizedQuery(person.name);
-                    onSelect(person);
+                    onSelected(person);
                     setFocused(false);
                   }}
                   style={{ cursor: 'pointer' }}
